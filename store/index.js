@@ -1,5 +1,7 @@
 export const state = () => ({
-  authUser: null
+  authUser: {
+    kikuk: 'sasasas'
+  }
 })
 
 export const mutations = {

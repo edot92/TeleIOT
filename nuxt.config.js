@@ -11,19 +11,28 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', type: 'text/css', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' }
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href:
+          'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
+      }
+    ],
+    script: [
+      {
+        src: 'https://unpkg.com/babel-polyfill/dist/polyfill.min.js'
+      }
     ]
   },
   /*
   ** Global CSS
   */
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/app.styl'],
   /*
   ** Add axios globally
   */
   build: {
-    vendor: ['axios'],
-    vendor: ['vuetify'],
+    vendor: ['axios', 'vuetify'],
     extractCSS: true,
     /*
     ** Run ESLINT on save
@@ -39,14 +48,12 @@ module.exports = {
       }
     }
   },
-    /*
+  /*
   ** Load Vuetify into the app
   */
-  plugins: ['~/plugins/vuetify'],
+  plugins: ['~/plugins/vuetify', '~/plugins/moment']
   /*
   ** Load Vuetify CSS globally
   */
-  css: ['~/assets/css/app.styl']
-  
+  // css: []
 }
-
