@@ -1,4 +1,7 @@
-require('./telegram')
+const isEnableTele = process.env.TELE_ENABLED || false
+if (isEnableTele) {
+  require('./telegram')
+}
 const { Nuxt, Builder } = require('nuxt')
 const express = require('express')
 const session = require('express-session')
@@ -10,7 +13,7 @@ const StravaStrategy = require('passport-strava').Strategy
 var server = express()
 
 const host = process.env.HOST || '127.0.0.1'
-const port = process.env.PORT || 3000
+const port = process.env.PORT || '3000'
 passport.use(
   new StravaStrategy(
     {
@@ -88,5 +91,5 @@ if (config.dev) {
 server.use(nuxt.render)
 
 // Listen the server
-server.listen(port)
+server.listen(port, host)
 console.log('Server listening on ' + host + ':' + port) // eslint-disable-line no-console
