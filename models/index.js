@@ -51,21 +51,7 @@ global.db = {
   Device: null,
   Pelanggan: null
 }
-sequelize
-  // .sync({ force: true })
-  .sync()
-  .then(() => {
-    console.log(c.red('model created'))
-    Petugas.create({
-      username: 'budi',
-      namaLengkap: 'tes123',
-      email: 'budi@gmail.com',
-      password: 'password',
-      alamat: 'tes123',
-      noTelp: '123'
-    })
-  })
-  .catch(console.log(c.red))
+
 export const Pelanggan = (global.db.Pelanggan = sequelize.define('pelanggan', {
   id: {
     type: Sequelize.INTEGER,
@@ -116,7 +102,21 @@ export const Petugas = (global.db.Petugas = sequelize.define('petugas', {
   alamat: Sequelize.STRING,
   noTelp: Sequelize.STRING
 }))
-
+sequelize
+  // .sync({ force: true })
+  .sync()
+  .then(() => {
+    console.log(c.red('model created'))
+    global.db.Petugas.create({
+      username: 'budi',
+      namaLengkap: 'tes123',
+      email: 'budi@gmail.com',
+      password: 'password',
+      alamat: 'tes123',
+      noTelp: '123'
+    })
+  })
+  .catch(console.log(c.red))
 // set ping setiap 10 detik
 setInterval(() => {
   sequelize
