@@ -1,16 +1,29 @@
+const chalk = require('chalk')
+global.chalk = chalk
 const isEnableTele = process.env.TELE_ENABLED || false
+const isGenerateKey = process.env.GENERATEKEY_ENABLED || false
 if (isEnableTele) {
   require('./telegram')
 }
+if (isGenerateKey) {
+  require('../helper/generatekey')
+}
+// database
+require('../models/index')
 const { Nuxt, Builder } = require('nuxt')
+
 const express = require('express')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const passport = require('passport')
 const StravaStrategy = require('passport-strava').Strategy
-
+var SQLiteStore = require('connect-sqlite3')(session)
 var server = express()
+// var restapi = require('./api/index')
+// server.use(function (req, res, next) {
+//   console.log(req.url)
+// })
 
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || '3000'
@@ -40,15 +53,20 @@ passport.use(
 // For serving static files from public directory
 // server.use(express.static('public'));
 server.use(cookieParser())
-server.use(bodyParser())
+// server.use(bodyParser())
+server.use(bodyParser.json()) // support json encoded bodies
+server.use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
+server.use('/api/user', require('./api/user'))
+server.use('/api/device', require('./api/device'))
 server.use(
   session({
-    secret: 'keyboard cat'
+    store: new SQLiteStore(),
+    secret: 'keyboard cat',
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
   })
 )
 server.use(passport.initialize())
 server.use(passport.session())
-
 passport.serializeUser(function (user, done) {
   done(null, user)
 })
@@ -89,7 +107,6 @@ if (config.dev) {
 
 // Give nuxt middleware to express
 server.use(nuxt.render)
-
 // Listen the server
 server.listen(port, host)
 console.log('Server listening on ' + host + ':' + port) // eslint-disable-line no-console

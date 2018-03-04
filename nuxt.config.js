@@ -1,3 +1,4 @@
+require('dotenv').config()
 module.exports = {
   /*
   ** Headers of the page
@@ -21,6 +22,9 @@ module.exports = {
     script: [
       {
         src: 'https://unpkg.com/babel-polyfill/dist/polyfill.min.js'
+      },
+      {
+        src: 'https://cdn.jsdelivr.net/npm/sweetalert'
       }
     ]
   },
@@ -39,12 +43,26 @@ module.exports = {
     */
     extend (config, ctx) {
       if (ctx.isClient) {
-        config.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules)/
-        })
+        config.module.rules.push(
+          {
+            enforce: 'pre',
+            test: /\.(js|vue)$/,
+            loader: 'eslint-loader',
+            exclude: /(node_modules)/
+          },
+          // {
+          //   test: /\.js$/,
+          //   loader: 'babel-loader',
+          //   exclude: /node_modules/
+          // },
+          {
+            test: /\.(png|jpg|gif|svg)$/,
+            loader: 'url-loader',
+            options: {
+              name: '[name].[ext]?[hash]'
+            }
+          }
+        )
       }
     }
   },

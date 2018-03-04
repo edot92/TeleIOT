@@ -11,18 +11,20 @@
                         add
                     </v-icon>
                 </v-btn>
+                <v-btn small color="info" @click="getlist()">
+                    <v-icon>
+                        refresh
+                    </v-icon>
+                </v-btn>
             </v-flex>
             <v-divider></v-divider>
             <v-flex xs12>
-                <v-data-table :headers="headers" :items="items">
+                <v-data-table :headers="headers" :items="items" :search="search" :pagination.sync="pagination" :total-items="totalItems"
+                    :loading="loading">
                     <template slot="items" slot-scope="props">
-                        <td>{{ props.item.name }}</td>
-                        <td class="text-xs-right">{{ props.item.calories }}</td>
-                        <td class="text-xs-right">{{ props.item.fat }}</td>
-                        <td class="text-xs-right">{{ props.item.carbs }}</td>
-                        <td class="text-xs-right">{{ props.item.protein }}</td>
-                        <td class="text-xs-right">{{ props.item.iron }}</td>
-                        <td>
+                        <td class="text-xs-center">{{props.item.index}}</td>
+                        <td class="text-xs-center">{{ props.item.uniqueToken }}</td>
+                        <td class="text-xs-center">
                             <v-btn color="info">
                                 <v-icon>
                                     edit
@@ -57,8 +59,19 @@
       layout: 'layout',
       data () {
         return {
+          search: '',
+          totalItems: 0,
+          items: [],
+          loading: false,
+          pagination: {},
           dialogAdd: false,
           headers: [
+            {
+              text: 'No',
+              align: 'center',
+              sortable: true,
+              value: 'no'
+            },
             {
               text: 'Unique Token',
               align: 'center',
@@ -66,14 +79,20 @@
               value: 'uniqueToken'
             },
             {
-              text: 'Id Telegram',
+              text: 'Action',
               align: 'center',
               sortable: true,
-              value: 'user'
+              value: ''
             }
-          ],
-          items: [
           ]
+
+        }
+      },
+      watch: {
+        pagination: {
+          handler () {
+            this.getlist()
+          }
         }
       },
       methods: {
@@ -83,6 +102,36 @@
           setTimeout(() => {
             thisV.dialogAdd = true
           }, 200)
+        },
+        getlist () {
+          const thisV = this
+          let limit = thisV.pagination.rowsPerPage
+          let offset = thisV.pagination.page * limit - limit
+          thisV.$store.dispatch('Device/httpDeviceGetList', {
+            offset: offset,
+            limit: limit
+          }).then(value => {
+            if (value.error === false) {
+              if (value.payload.value.count <= thisV.pagination.rowsPerPage) {
+                value.payload.value.count = thisV.pagination.rowsPerPage
+              }
+              thisV.totalItems = value.payload.value.count
+              thisV.items = []
+              thisV.items = value.payload.value.rows
+              thisV.indexNo = []
+              let count = offset + 1
+              thisV.items.forEach(element => {
+                element.index = count
+                count++
+              })
+              console.log(thisV.items)
+            } else {
+              swal('Info', value.msg, 'error')
+            }
+            console.log(value)
+          }).catch((err) => {
+            console.error(err)
+          })
         }
       },
       mounted () {

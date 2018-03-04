@@ -10,10 +10,6 @@
                             <v-icon>close</v-icon>
                         </v-btn>
                         <v-toolbar-title>Add new device</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-toolbar-items>
-                            <v-btn dark flat @click.native="dialog = false">Save</v-btn>
-                        </v-toolbar-items>
                     </v-toolbar>
                     <div>
                         <br>
@@ -24,16 +20,15 @@
                             <v-flex xs6>
                                 <v-card>
                                     <v-card-text>
-                                        <v-text-field box label="Unique Token :" v-model="email" persistent-hint></v-text-field>
-                                        <v-select label="Pilih ID telegram" :items="listUser">
-
-                                        </v-select>
+                                        <v-text-field disabled box label="Unique Token :" v-model="uniqueToken" persistent-hint></v-text-field>
+                                        <v-text-field disabled box label="username :" v-model="username" persistent-hint></v-text-field>
+                                        <v-text-field disabled box label="password :" v-model="password" persistent-hint></v-text-field>
                                         <div style="
                                                position: relative;
                                                align-items: center;
                                                align-content: center;
                                                ">
-                                            <v-btn block color="primary">
+                                            <v-btn block color="primary" @click="addnew">
                                                 Simpan
                                             </v-btn>
                                         </div>
@@ -53,6 +48,9 @@
       props: ['show'],
       data () {
         return {
+          uniqueToken: '',
+          username: '',
+          password: '',
           dialog: false,
           notifications: false,
           sound: true,
@@ -66,7 +64,43 @@
         }
       },
       mounted () {
-        this.dialog = this.show
+        this.generateRandom()
+      },
+      methods: {
+        generateRandom () {
+          this.uniqueToken = this.$moment().format('x') +
+                    Math.random().toString(36).substring(7)
+
+          let tempuserAndPas = ''
+          tempuserAndPas = this.$moment().format('DDMM') + Math.random().toString(36).substring(10) + this.$moment().format('hhmmss')
+          this.username = tempuserAndPas
+          this.password = tempuserAndPas
+          this.dialog = this.show
+        },
+        addnew () {
+          const thisV = this
+          if (thisV.uniqueToken === '' || thisV.username === '') {
+            swal('', 'harap isi parameter', 'warning')
+            return
+          }
+          let param = {
+            uniquetoken: thisV.uniqueToken,
+            userandpass: thisV.username
+          }
+          thisV.$store.dispatch('Device/httpDeviceAddnew', param).then(res => {
+            if (res.error === false) {
+              thisV.generateRandom()
+              swal('', res.msg, 'success')
+              thisV.dialog = false
+            } else {
+              swal('', res.msg, 'error')
+            }
+          }).catch((err) => {
+            thisV.generateRandom()
+            console.error(err)
+            swal('', err, 'error')
+          })
+        }
       }
     }
 </script>

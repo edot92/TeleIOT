@@ -1,9 +1,10 @@
-process.env['NTBA_FIX_319'] = 1 // https://github.com/yagop/node-telegram-bot-api/issues/484
 const TelegramBot = require('node-telegram-bot-api')
 const token =
   process.env.BOT_TOKEN || '472777709:AAEJaaYdGAyzHY5pukKcdwIwNKOpBlu-Jic'
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true })
+process.env['NTBA_FIX_319'] = 1 // https://github.com/yagop/node-telegram-bot-api/issues/484
+
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
