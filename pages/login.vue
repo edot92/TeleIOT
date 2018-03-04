@@ -19,7 +19,7 @@
             <v-form>
               <v-text-field prepend-icon="person" name="login" v-model="form.username" label="Login" type="text"></v-text-field>
               <v-text-field prepend-icon="lock" v-model="form.password" name="password" label="Password" id="password" type="password"></v-text-field>
-              <v-select :items="itemSelect" label="Login Sebagai ?" single-line auto prepend-icon="option" hide-details></v-select>
+              <!-- <v-select :items="itemSelect" label="Login Sebagai ?" single-line auto prepend-icon="option" hide-details></v-select> -->
             </v-form>
           </v-card-text>
           <v-card-actions>
