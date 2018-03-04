@@ -1,3 +1,4 @@
+require('dotenv').config()
 const chalk = require('chalk')
 global.chalk = chalk
 const isEnableTele = process.env.TELE_ENABLED || false

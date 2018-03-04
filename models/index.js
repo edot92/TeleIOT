@@ -1,22 +1,49 @@
 const Sequelize = require('sequelize')
 const c = require('chalk')
-const sequelize = new Sequelize('database', 'username', 'password', {
-  host: 'localhost',
-  dialect: 'sqlite',
+var fs = require('fs')
+try {
+  fs.unlinkSync(process.cwd() + '/dbku.sqlite')
+} catch (error) {
+  console.log(chalk.red(error))
+}
 
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  logging: true,
-  // SQLite only
-  storage: 'dbku.sqlite',
-
-  // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-  operatorsAliases: false
-})
+var intervalSqlCek
+var sequelize
+if (process.env.JENIS_DB) {
+  intervalSqlCek = 3000
+  sequelize = new Sequelize('sql12224604', 'sql12224604', 'FYlIkTCj9A', {
+    dialect: 'mysql',
+    host: 'sql12.freemysqlhosting.net',
+    port: 3306,
+    pool: {
+      max: 30,
+      min: 0,
+      idle: 10000,
+      acquire: 1000000
+    },
+    logging: true
+    // SQLite only
+    // storage: 'dbku.sqlite',
+    // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
+    // operatorsAliases: false
+  })
+} else {
+  intervalSqlCek = 10000
+  sequelize = new Sequelize('sql12224604', 'sql12224604', 'FYlIkTCj9A', {
+    dialect: 'sqlite',
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    },
+    logging: true,
+    // SQLite only
+    storage: 'dbku.sqlite',
+    // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
+    operatorsAliases: false
+  })
+}
 
 global.db = {
   con: null, // koneksi global
@@ -24,6 +51,21 @@ global.db = {
   Device: null,
   Pelanggan: null
 }
+sequelize
+  // .sync({ force: true })
+  .sync()
+  .then(() => {
+    console.log(c.red('model created'))
+    Petugas.create({
+      username: 'budi',
+      namaLengkap: 'tes123',
+      email: 'budi@gmail.com',
+      password: 'password',
+      alamat: 'tes123',
+      noTelp: '123'
+    })
+  })
+  .catch(console.log(c.red))
 export const Pelanggan = (global.db.Pelanggan = sequelize.define('pelanggan', {
   id: {
     type: Sequelize.INTEGER,
@@ -74,31 +116,18 @@ export const Petugas = (global.db.Petugas = sequelize.define('petugas', {
   alamat: Sequelize.STRING,
   noTelp: Sequelize.STRING
 }))
-sequelize
-  // .sync({ force: true })
-  .sync()
-  .then(() => {
-    console.log(c.red('model created'))
-  })
-  .catch(console.log(c.red))
+
 // set ping setiap 10 detik
 setInterval(() => {
   sequelize
     .authenticate()
     .then(() => {
-      // console.log(c.green('Connection has been established successfully.'))
+      console.log(c.green('Connection has been established successfully.'))
     })
     .catch(err => {
       console.log(c.red('Unable to connect to the database:', err))
     })
-}, 20000)
-Petugas.create({
-  username: 'budi',
-  namaLengkap: 'tes123',
-  email: 'budi@gmail.com',
-  password: 'password',
-  alamat: 'tes123',
-  noTelp: '123'
-})
+}, intervalSqlCek)
+
 console.log(chalk.red('INIT DB .......!!!!!!!!!!'))
 export const con = (global.db.con = sequelize)
