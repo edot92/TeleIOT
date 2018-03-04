@@ -1,10 +1,9 @@
 {
-  "name": "nuxt-express-vuetify-boilerplate",
+  "name": "teleiot",
   "version": "1.0.0",
   "engines": {
     "node": "8.9.4"
   },
-  "license": "MIT",
   "description": "budi siskom sampel bot",
   "author": "edot92@gmail.com",
   "private": true,
