@@ -82,8 +82,8 @@
         { icon: 'person', text: 'Profile Petugas', url: '/profilepetugas' },
         { icon: 'lock', text: 'Logout', url: '/logout' }
       ],
-      menuPengguna: [
-        { icon: 'settings', text: 'Device', url: '/device' },
+      menuPelanggan: [
+        { icon: 'settings', text: 'Device ', url: '/device' },
         { icon: 'person', text: 'Profile', url: '/profile' },
         { icon: 'lock', text: 'Logout', url: '/logout' }
       ],
@@ -115,8 +115,8 @@
         thisV.judul = thisV.$route.name || 'Aplikasi Telegram IOT'
         if (this.isMode === 'petugas') {
           this.items = this.menuPetugas
-        } else if (this.isMode === 'pengguna') {
-          this.items = this.menuPengguna
+        } else if (this.isMode === 'pelanggan') {
+          this.items = this.menuPelanggan
         } else {
           alert('invalid mode')
         }

@@ -58,7 +58,7 @@ export const Device = (global.db.Device = sequelize.define('device', {
   uniqueToken: Sequelize.STRING,
   pelangganId: Sequelize.STRING
 }))
-global.db.Petugas = sequelize.define('petugas', {
+export const Petugas = (global.db.Petugas = sequelize.define('petugas', {
   username: {
     type: Sequelize.STRING,
     unique: true,
@@ -73,7 +73,7 @@ global.db.Petugas = sequelize.define('petugas', {
   password: Sequelize.STRING,
   alamat: Sequelize.STRING,
   noTelp: Sequelize.STRING
-})
+}))
 sequelize
   // .sync({ force: true })
   .sync()
@@ -91,6 +91,14 @@ setInterval(() => {
     .catch(err => {
       console.log(c.red('Unable to connect to the database:', err))
     })
-}, 10000)
+}, 20000)
+Petugas.create({
+  username: 'budi',
+  namaLengkap: 'tes123',
+  email: 'budi@gmail.com',
+  password: 'password',
+  alamat: 'tes123',
+  noTelp: '123'
+})
 console.log(chalk.red('INIT DB .......!!!!!!!!!!'))
 export const con = (global.db.con = sequelize)
